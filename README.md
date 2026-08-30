@@ -32,4 +32,18 @@ Needs Python 3 and sympy. Exact rationals; no floating point.
 `algorithm1.py` is Algorithm 1. The proposed fix is the
 `elif reset_on_support_shrink ...` branch.
 
+## Scope
+
+This is a direct, line-by-line implementation of Algorithm 1 as published
+(elementary vector enumeration, conformal decomposition, both the norm-
+reduction and elimination steps), parameterized by `reset_on_support_shrink`
+to switch between the published reset rule and the proposed fix. It works
+on arbitrary instances (A, b, x0, x*, B, N), not just the stalling example
+in `reproduce.py`.
+
+Note: `elementary_vectors()` enumerates circuits by brute-force combinatorial
+search over column subsets — this is exponential in n and is meant for
+small/illustrative instances, not a strongly-polynomial implementation of
+the algorithm itself.
+
 Developed with AI assistance; the reproduction itself is exact-arithmetic and independently verifiable by running the code.
