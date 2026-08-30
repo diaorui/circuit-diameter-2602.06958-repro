@@ -19,9 +19,11 @@ Needs Python 3 and sympy. Exact rationals; no floating point.
 
 ## What you should see
 
-1. Published rule: stalls with \(\alpha = 0\) on a concrete instance (\(m=3\), \(n=7\)).
-2. Every conformal decomposition of \(z-x\) that progresses on the target coordinate is a null step, so the stall is not a greedy-decomposition artifact.
-3. The one-line fix converges on the same instance, with at most \(2m\) resets.
+`reproduce.py` has three steps.
+
+1. **Published Algorithm 1** (reset \(r\) only when \(T\) changes): the walk hits \(\alpha = 0\) and repeats forever.
+2. **Not a bad circuit choice:** at that iterate, every circuit that could be used for the elimination step also has \(\alpha = 0\).
+3. **The fix** (also reset \(r\) when a nonbasic coordinate is zeroed): the same instance reaches \(x^*\), with at most \(2m\) resets.
 
 `algorithm1.py` is Algorithm 1. The proposed fix is the `elif reset_on_support_shrink ...` branch.
 

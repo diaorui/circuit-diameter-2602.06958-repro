@@ -34,8 +34,7 @@ This matches the proof's own accounting (at most 2m progress events).
 
 This script:
   1. Runs published Algorithm 1 on a concrete instance (m=3, n=7); it loops.
-  2. Checks that alpha=0 is forced for every valid conformal decomposition,
-     not just one greedy choice.
+  2. Checks that every circuit usable for that elimination step has alpha=0.
   3. Runs the one-line fix on the same instance; it converges.
 """
 from sympy import Matrix, Rational
@@ -71,7 +70,7 @@ except StallError as e:
     print(f"\n>>> STALL: {e}\n")
 
 print("=" * 70)
-print("STEP 2: alpha=0 is forced for EVERY conformal decomposition")
+print("STEP 2: not a bad circuit choice")
 print("=" * 70)
 if stall.get("step_type") != "elimination":
     print(f"stall was {stall.get('step_type')}, not elimination; Step 2 skipped")
@@ -90,12 +89,11 @@ w = z - x_i
 
 already_zero = [j for j in N if x_i[j] == 0]
 stale = {j: x_r[j] for j in already_zero if x_r[j] != 0}
-print(f"already-zero in N at x^(i): {already_zero}")
-print(f"stale nonzero in x^(r) on those: {stale}")
-print(f"target q = {q}, rho = {varrho}")
-print(f"z - x = {list(w)}")
-print(f"spurious targets on already-zero coords: "
-      f"{ {j: w[j] for j in already_zero} }")
+neg_already_zero = [j for j in already_zero if w[j] < 0]
+print(f"already-zero nonbasic coords: {already_zero}")
+print(f"still nonzero in stale x^(r): {stale}")
+print(f"z - x is negative on already-zero coords {neg_already_zero} "
+      f"→ decreasing them forces α=0")
 
 
 def can_appear_in_conformal_decomp(g, w):
@@ -110,22 +108,19 @@ def forces_null_step(g, x):
 
 
 ev = elementary_vectors(A, m, n)
-touching_q = [g for g in ev if g[q] != 0]
 compatible = []
-for g in touching_q:
+for g in ev:
+    if g[q] == 0:
+        continue
     for cand in (g, -g):
         if can_appear_in_conformal_decomp(cand, w):
             compatible.append(cand)
 
-print(f"\nelementary vectors touching q={q}: {len(touching_q)}")
-print(f"of those, usable in some conformal decomposition of z-x: "
-      f"{len(compatible)}")
 n_null = sum(1 for g in compatible if forces_null_step(g, x_i))
-print(f"...forced to alpha=0 (decrease an already-zero coordinate): "
-      f"{n_null} / {len(compatible)}")
+print(f"\ncircuits usable for this elimination step: {len(compatible)}")
+print(f"of those with α=0: {n_null} / {len(compatible)}")
 if compatible and n_null == len(compatible):
-    print(">>> EVERY usable circuit for progress on q is a null step.")
-    print(">>> alpha=0 is therefore forced, regardless of decomposition.")
+    print(">>> every usable circuit has α=0")
 
 print()
 print("=" * 70)

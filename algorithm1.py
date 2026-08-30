@@ -205,7 +205,7 @@ def run_algorithm(A, b, x0, xstar, B, N, m, n,
 
         if alpha == 0:
             raise StallError(
-                "STALL: alpha=0, x unchanged, infinite loop",
+                "alpha=0, x unchanged, infinite loop",
                 dict(x=x, x_r=x_r, i=i, r=r, T=T, step_type=step_type))
 
         x = x_new
