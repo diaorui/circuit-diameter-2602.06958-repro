@@ -31,3 +31,5 @@ Needs Python 3 and sympy. Exact rationals; no floating point.
 
 `algorithm1.py` is Algorithm 1. The proposed fix is the
 `elif reset_on_support_shrink ...` branch.
+
+Developed with AI assistance; the reproduction itself is exact-arithmetic and independently verifiable by running the code.
