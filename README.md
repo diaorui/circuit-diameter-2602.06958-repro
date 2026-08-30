@@ -4,10 +4,9 @@ Reproduction of a non-termination bug in Algorithm 1 of
 
 > B. Natura, *Circuit diameter of polyhedra is strongly polynomial*, arXiv:2602.06958
 
-The **proofs are fine**. The gap is only in the pseudocode: the reference
-index `r` is reset when the trapped set `T` changes, but not when a
-non-basic coordinate is zeroed — the other progress event the
-\(O(m^2\log m)\) analysis counts on.
+The **proofs are fine**. The paper measures Phase 2 progress by two events: the trapped set \(T\) grows, or a non-basic coordinate is zeroed. Algorithm 1 only resets the reference index \(r\) on the first of these. After a coordinate in \(N\) is zeroed, \(x^{(r)}\) can still hold a stale nonzero value for it, so a later elimination step produces a direction that tries to decrease an already-zero coordinate. The step size is then \(\alpha = 0\), \(T\) does not change, \(r\) is not reset, and the algorithm stalls.
+
+The fix is to reset \(r\) on either progress event.
 
 ## Run
 
@@ -20,17 +19,11 @@ Needs Python 3 and sympy. Exact rationals; no floating point.
 
 ## What you should see
 
-1. **Published rule** (reset `r` only when `T` changes): the walk hits
-   `alpha = 0` and repeats forever on a concrete instance (`m=3`, `n=7`).
-2. **Decomposition-independent**: every elementary vector that can appear
-   in a conformal decomposition of `z - x` and that makes progress on the
-   intended coordinate `q` also decreases an already-zero coordinate, so
-   `alpha = 0` is forced.
-3. **One-line fix** (also reset `r` when `|supp(x_N)|` shrinks): the same
-   instance converges, with at most `2m` resets.
+1. Published rule: stalls with \(\alpha = 0\) on a concrete instance (\(m=3\), \(n=7\)).
+2. Every conformal decomposition of \(z-x\) that progresses on the target coordinate is a null step, so the stall is not a greedy-decomposition artifact.
+3. The one-line fix converges on the same instance, with at most \(2m\) resets.
 
-`algorithm1.py` is Algorithm 1. The proposed fix is the
-`elif reset_on_support_shrink ...` branch.
+`algorithm1.py` is Algorithm 1. The proposed fix is the `elif reset_on_support_shrink ...` branch.
 
 ## Scope
 
