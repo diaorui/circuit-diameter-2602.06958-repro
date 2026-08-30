@@ -2,7 +2,7 @@
 
 Reproduction of a non-termination bug in Algorithm 1 of
 
-> B. Natura, *Circuit diameter of polyhedra is strongly polynomial*, arXiv:2602.06958
+> B. Natura, *Circuit diameter of polyhedra is strongly polynomial*, [arXiv:2602.06958](https://arxiv.org/abs/2602.06958)
 
 The **proofs are fine**. The paper measures Phase 2 progress by two events: the trapped set $T$ grows, or a non-basic coordinate is zeroed. Algorithm 1 only resets the reference index $r$ on the first of these. After a coordinate in $N$ is zeroed, $x^{(r)}$ can still hold a stale nonzero value for it, so a later elimination step produces a direction that tries to decrease an already-zero coordinate. The step size is then $\alpha = 0$, $T$ does not change, $r$ is not reset, and the algorithm stalls.
 
